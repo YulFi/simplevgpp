@@ -67,7 +67,7 @@
     <ProjectGuid>{174af956-7ddc-47f8-b010-6cd3c4c2512f}</ProjectGuid>
     <RootNamespace>glfwglobe</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>glfw_globe3</ProjectName>
+    <ProjectName>simplevgpp</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

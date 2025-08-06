@@ -1,128 +1,14 @@
 #include "renderer/MsdfTextRenderer.h"
+
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
+#include <nlohmann/json.hpp>
+
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
-
-struct GlyphMetrics {
-	// Atlas coordinates (normalized 0-1)
-	float atlasLeft, atlasBottom, atlasRight, atlasTop;
-
-	// Glyph positioning
-	float planeBounds[4]; // left, bottom, right, top
-	float atlasBounds[4]; // left, bottom, right, top (pixel coordinates)
-
-	// Typography metrics
-	float advance;
-
-	// Unicode codepoint
-	uint32_t unicode;
-};
-
-struct FontAtlas {
-	std::unordered_map<uint32_t, GlyphMetrics> glyphs;
-
-	// Font metrics
-	float ascender;
-	float descender;
-	float lineHeight;
-	float underlineY;
-	float underlineThickness;
-
-	// Atlas properties
-	int atlasWidth;
-	int atlasHeight;
-	float distanceRange;
-	float size;
-
-	// OpenGL texture
-	GLuint textureID;
-
-	void loadFromFile(const std::string& jsonPath);
-};
-
-void FontAtlas::loadFromFile(const std::string& jsonPath) {
-	// Load and parse JSON
-	std::ifstream file(jsonPath, std::ifstream::binary);
-	if (!file.is_open()) {
-		std::cerr << "Failed to open JSON file: " << jsonPath << std::endl;
-	}
-
-	json fontData;
-	try {
-		file >> fontData;
-	}
-	catch (const json::exception& e) {
-		std::cerr << "JSON parsing error: " << e.what() << std::endl;
-	}
-
-	// Parse atlas properties
-	if (fontData.contains("atlas")) {
-		const auto& atlas = fontData["atlas"];
-		atlasWidth = atlas["width"];
-		atlasHeight = atlas["height"];
-		distanceRange = atlas["distanceRange"];
-		size = atlas["size"];
-	}
-
-	// Parse font metrics
-	if (fontData.contains("metrics")) {
-		const auto& metrics = fontData["metrics"];
-		ascender = metrics["ascender"];
-		descender = metrics["descender"];
-		lineHeight = metrics["lineHeight"];
-
-		if (metrics.contains("underlineY"))
-			underlineY = metrics["underlineY"];
-		if (metrics.contains("underlineThickness"))
-			underlineThickness = metrics["underlineThickness"];
-	}
-
-	// Parse glyphs
-	if (fontData.contains("glyphs")) {
-		for (const auto& glyphData : fontData["glyphs"]) {
-			GlyphMetrics glyph = {};
-
-			// Unicode codepoint
-			glyph.unicode = glyphData["unicode"];
-
-			// Advance
-			glyph.advance = glyphData["advance"];
-
-			// Plane bounds (glyph positioning)
-			if (glyphData.contains("planeBounds")) {
-				const auto& pb = glyphData["planeBounds"];
-				glyph.planeBounds[0] = pb["left"];
-				glyph.planeBounds[1] = pb["bottom"];
-				glyph.planeBounds[2] = pb["right"];
-				glyph.planeBounds[3] = pb["top"];
-			}
-
-			// Atlas bounds (texture coordinates in pixels)
-			if (glyphData.contains("atlasBounds")) {
-				const auto& ab = glyphData["atlasBounds"];
-				glyph.atlasBounds[0] = ab["left"];
-				glyph.atlasBounds[1] = ab["bottom"];
-				glyph.atlasBounds[2] = ab["right"];
-				glyph.atlasBounds[3] = ab["top"];
-
-				// Convert to normalized texture coordinates (0-1)
-				glyph.atlasLeft = (float)ab["left"] / atlasWidth;
-				glyph.atlasBottom = (float)ab["bottom"] / atlasHeight;
-				glyph.atlasRight = (float)ab["right"] / atlasWidth;
-				glyph.atlasTop = (float)ab["top"] / atlasHeight;
-			}
-
-			// Store glyph
-			glyphs[glyph.unicode] = glyph;
-		}
-	}
-}
-
 
 // Helper: Convert UTF-8 to UTF-32 for codepoint iteration (minimal)
 static std::u32string utf8_to_utf32(const std::string& s) {
@@ -158,9 +44,6 @@ bool MsdfTextRenderer::load(const std::string& atlasPng, const std::string& meta
 	m_atlasW = float(w); m_atlasH = float(h);
 	stbi_image_free(data);
 
-	//FontAtlas atlas;
-	//atlas.loadFromFile(metadataJson);
-
 	// Parse JSON
 	parseJson(metadataJson);
 
@@ -194,59 +77,6 @@ void MsdfTextRenderer::parseJson(const std::string& path)
 	m_ascent = metrics.value("ascender", 0.0f);
 	m_descent = metrics.value("descender", 0.0f);
 	m_lineGap = metrics.value("lineHeight", 0.0f) - m_ascent + m_descent;
-
-	//// Parse atlas properties
-	//if (j.contains("atlas")) {
- //       //const auto& atlas = fontData["atlas"];
- //       //atlasWidth = atlas["width"];
- //       //atlasHeight = atlas["height"];
- //       //distanceRange = atlas["distanceRange"];
- //       //size = atlas["size"];
-	//}
-
-	//// Parse font metrics
-	//if (j.contains("metrics")) {
- //       //const auto& metrics = fontData["metrics"];
- //       //ascender = metrics["ascender"];
- //       //descender = metrics["descender"];
- //       //lineHeight = metrics["lineHeight"];
-
- //       //if (metrics.contains("underlineY"))
- //       //    underlineY = metrics["underlineY"];
- //       //if (metrics.contains("underlineThickness"))
- //       //    underlineThickness = metrics["underlineThickness"];
-	//}
-
-	//// Parse glyphs
-	//if (j.contains("glyphs")) {
-	//	for (const auto& glyphData : j["glyphs"]) {
-	//		int i = 0;
-	//	}
-	//}
-
-	//for (auto& g : j["glyphs"]) 
-	//{
-	//	uint32_t code = g.value("unicode", 0);
-
-	//	MsdfGlyph glyph;
-
-	//	glyph.uvRect = glm::vec4(
-	//		g["atlasBounds"]["left"].get<float>() / m_atlasW,
-	//		g["atlasBounds"]["bottom"].get<float>() / m_atlasH,
-	//		g["atlasBounds"]["right"].get<float>() / m_atlasW,
-	//		g["atlasBounds"]["top"].get<float>() / m_atlasH
-	//	);
-	//	glyph.size = glm::vec2(
-	//		g["planeBounds"]["right"].get<float>() - g["planeBounds"]["left"].get<float>(),
-	//		g["planeBounds"]["top"].get<float>() - g["planeBounds"]["bottom"].get<float>()
-	//	);
-	//	glyph.bearing = glm::vec2(
-	//		g["planeBounds"]["left"].get<float>(),
-	//		g["planeBounds"]["bottom"].get<float>()
-	//	);
-	//	glyph.advance = g.value("advance", glyph.size.x);
-	//	glyphs[code] = glyph;
-	//}
 
     // Parse glyphs
     if (j.contains("glyphs")) 
@@ -298,7 +128,7 @@ void MsdfTextRenderer::buildVertexBuffer(const std::u32string& text, float x, fl
 		float xpos = penX + g.bearing.x * scale;
 		//float ypos = penY - g.bearing.y * scale;
 
-		float ypos = y + (g.size.y - g.bearing.y);
+		float ypos = y - (g.size.y + g.bearing.y * scale);
 
 		float w = g.size.x * scale, h = g.size.y * scale;
 
@@ -313,6 +143,7 @@ void MsdfTextRenderer::buildVertexBuffer(const std::u32string& text, float x, fl
 			xpos + w, ypos,     u1, v0,
 			xpos + w, ypos - h, u1, v1
 			});
+
 		penX += g.advance * scale;
 		++quads;
 	}

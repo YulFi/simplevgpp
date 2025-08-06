@@ -111,26 +111,26 @@ int main() {
 		vg.beginFrame();
 
 		//draw3DButton(vg, 200, 200, 100, 30, 10, "OK");
-		drawFlatButton(vg, 200, 200, 100, 30, 10, "OK");
+		//drawFlatButton(vg, 200, 200, 100, 30, 10, "OK");
 
-		//vg.setOutlineColor({ 1,0,0,1 });   // Black outline
-		//vg.setOutlineWidth(4.0f);        // 3 pixels wide
+        vg.setOutlineColor({ 1,0,0,1 });   // Black outline
+        vg.setOutlineWidth(4.0f);        // 3 pixels wide
 
-		//// --- Solid color row (top) ---
-		//vg.setFillColor({ 0.0f, 0.65f, 1.0f, 1.0f });
-		//vg.fillCircle(circle);
+        // --- Solid color row (top) ---
+        vg.setFillColor({ 0.0f, 0.65f, 1.0f, 1.0f });
+        vg.fillCircle(circle);
 
-		//vg.setFillColor({ 1.0f, 0.4f, 0.3f, 1.0f });
-		//vg.fillRoundedRect(roundedRect);
+        vg.setFillColor({ 1.0f, 0.4f, 0.3f, 1.0f });
+        vg.fillRoundedRect(roundedRect);
 
-		//vg.setFillColor({ 1.0f, 0.8f, 0.15f, 1.0f });
-		//vg.fillTriangle(triangle);
+        vg.setFillColor({ 1.0f, 0.8f, 0.15f, 1.0f });
+        vg.fillTriangle(triangle);
 
-		//vg.setFillColor({ 0.3f, 1.0f, 0.4f, 1.0f });
-		//vg.fillRect(rect);
+        vg.setFillColor({ 0.3f, 1.0f, 0.4f, 1.0f });
+        vg.fillRect(rect);
 
-		//vg.setFillColor({ 1.0f, 0.5f, 1.0f, 1.0f });
-		//vg.drawLine(line, 8.0f);
+        vg.setFillColor({ 1.0f, 0.5f, 1.0f, 1.0f });
+        vg.drawLine(line, 8.0f);
 
 		// --- Draw "Hello World" text using MSDF renderer ---
 		glm::vec4 textColor = { 1.0f, 0.98f, 0.95f, 1.0f };
@@ -138,29 +138,29 @@ int main() {
 		float pxSize = 32.0f; // matches your atlas
 		float scale = pxSize;   // 1.0 for pxSize = 48, or adjust
 
-        //textRenderer.drawText("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", textX, textY, scale, textColor, proj);
+        textRenderer.drawText("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", textX, textY, scale, textColor, proj);
 
-        //textRenderer.drawText("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", textX, 280, 24, textColor, proj);
+        textRenderer.drawText("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", textX, 280, 24, textColor, proj);
 
-        //textRenderer.drawText("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", textX, 300, 18, textColor, proj);
+        textRenderer.drawText("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", textX, 300, 18, textColor, proj);
 
-		//vg.setOutlineWidth(0.0f);
+		vg.setOutlineWidth(0.0f);
 
-		//// --- Gradient row (bottom) ---
-  //      vg.setLinearGradient({ 60,320 }, { 160,420 }, { 0.0f,0.65f,1.0f,1.0f }, { 1.0f,1.0f,0.0f,1.0f });
-  //      vg.fillCircle(circleG);
+		// --- Gradient row (bottom) ---
+        vg.setLinearGradient({ 60,320 }, { 160,420 }, { 0.0f,0.65f,1.0f,1.0f }, { 1.0f,1.0f,0.0f,1.0f });
+        vg.fillCircle(circleG);
 
-  //      vg.setLinearGradient({ 240,370 }, { 360,470 }, { 1.0f,0.4f,0.3f,1.0f }, { 0.3f,1.0f,0.4f,1.0f });
-  //      vg.fillRoundedRect(roundedRectG);
+        vg.setLinearGradient({ 240,370 }, { 360,470 }, { 1.0f,0.4f,0.3f,1.0f }, { 0.3f,1.0f,0.4f,1.0f });
+        vg.fillRoundedRect(roundedRectG);
 
-  //      vg.setLinearGradient({ 420,320 }, { 540,370 }, { 1.0f,0.8f,0.15f,1.0f }, { 0.0f,0.65f,1.0f,1.0f });
-  //      vg.fillTriangle(triangleG);
+        vg.setLinearGradient({ 420,320 }, { 540,370 }, { 1.0f,0.8f,0.15f,1.0f }, { 0.0f,0.65f,1.0f,1.0f });
+        vg.fillTriangle(triangleG);
 
-  //      vg.setLinearGradient({ 580,320 }, { 700,410 }, { 0.3f,1.0f,0.4f,1.0f }, { 1.0f,0.5f,1.0f,1.0f });
-  //      vg.fillRect(rectG);
+        vg.setLinearGradient({ 580,320 }, { 700,410 }, { 0.3f,1.0f,0.4f,1.0f }, { 1.0f,0.5f,1.0f,1.0f });
+        vg.fillRect(rectG);
 
-  //      vg.setLinearGradient({ 740,320 }, { 860,370 }, { 1.0f,0.5f,1.0f,1.0f }, { 0.3f,1.0f,0.4f,1.0f });
-  //      vg.drawLine(lineG, 8.0f);
+        vg.setLinearGradient({ 740,320 }, { 860,370 }, { 1.0f,0.5f,1.0f,1.0f }, { 0.3f,1.0f,0.4f,1.0f });
+        vg.drawLine(lineG, 8.0f);
 
 		vg.endFrame();
 

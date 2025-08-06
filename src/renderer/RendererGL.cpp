@@ -39,8 +39,8 @@ void RendererGL::setLinearGradient(const glm::vec2& p0, const glm::vec2& p1,
 // Frame control
 void RendererGL::beginFrame() {
 	glViewport(0, 0, m_width, m_height);
-	//glClearColor(0.08f, 0.08f, 0.10f, 1.0f);
-	glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
+	glClearColor(0.08f, 0.08f, 0.10f, 1.0f);
+	//glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
